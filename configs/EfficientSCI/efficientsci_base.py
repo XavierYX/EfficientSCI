@@ -9,7 +9,7 @@ data = dict(
     workers_per_gpu=4,
 )
 
-resize_h,resize_w = 128,128
+resize_h,resize_w = 256,256
 train_pipeline = [ 
     dict(type='RandomResize'),
     dict(type='RandomCrop',crop_h=resize_h,crop_w=resize_w,random_size=True),
@@ -23,9 +23,15 @@ train_data = dict(
     pipeline = train_pipeline
 )
 test_data = dict(
-    mask_path="test_datasets/mask/efficientsci_mask.mat"
+    data_root="test_datasets/simulation/article",
+    mask_path="test_datasets/mask/real_mask_cr8_sim.mat"
 )
-
+real_data = dict(
+    type="GrayRealData",
+    mask_path="test_datasets/mask/real_mask_cr8_WF.mat",
+    cr=8,
+    data_root="test_datasets/real_data/cr8/WF"
+)
 model = dict(
     type='EfficientSCI',
     in_ch=64, 
@@ -39,4 +45,4 @@ eval=dict(
     interval=1
 )
 
-checkpoints="checkpoints/efficientsci_base.pth"
+checkpoints="checkpoints/efficientsci_finetune.pth"
