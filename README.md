@@ -1,57 +1,106 @@
-# EfficientSCI
-This repo is the implementation of [EfficientSCI: Densely Connected Network with Space-time Factorization for
-Large-scale Video Snapshot Compressive Imaging](https://openaccess.thecvf.com/content/CVPR2023/html/Wang_EfficientSCI_Densely_Connected_Network_With_Space-Time_Factorization_for_Large-Scale_Video_CVPR_2023_paper.html).
+# NIR-II Temporal Compressive Wide-Field Microscope (TCWM)
 
-## Testing Result on Simulation Dataset
-<div align="center">
-  <img src="docs/psnr_time.png" width=60% />  
-  
-  Fig1. Comparison of reconstruction quality and testing time of several SOTA deep learning based algorithms.
-</div>
+Official reconstruction code for our paper:
+
+**NIR-II Temporal Compressive Wide-Field Microscope (TCWM) Achieving Fluorescent Dynamic Imaging Beyond Camera Frame Rate**  
+Xuan You, Xiaolong Liu, Wei Liu, Peijin Zhang, Yuhuang Zhang, Yalun Wang, Jianguo Wang, and Jun Qian  
+*Laser & Photonics Reviews*, 2026  
+[[Paper](https://onlinelibrary.wiley.com/doi/10.1002/lpor.202502999)]
+
+## Overview
+
+This repository provides the reconstruction code used in our NIR-II temporal compressive wide-field microscope (TCWM).
+
+TCWM enables high-speed NIR-II fluorescence imaging by temporally encoding multiple frames into a single camera exposure and reconstructing the high-speed image sequence computationally.
+
+The reconstruction framework is based on [EfficientSCI](https://github.com/ucaswangls/EfficientSCI). For the TCWM experiments, EfficientSCI was adapted and fine-tuned using experimentally acquired masks from the TCWM system for reconstruction of experimental fluorescence measurements.
 
 ## Installation
-Please see the [Installation Manual](docs/install.md) for EfficientSCI Installation. 
 
-## Training 
-Support multi GPUs and single GPU training efficiently. First download DAVIS 2017 dataset from [DAVIS website](https://davischallenge.org/), then modify *data_root* value in *configs/\_base_/davis.py* file, make sure *data_root* link to your training dataset path.
+Clone this repository:
 
-Launch multi GPU training by the statement below:
-
-```
-CUDA_VISIBLE_DEVICES=0,1,2,3 python -m torch.distributed.launch --nproc_per_node=4  --master_port=3278 tools/train.py configs/EfficientSCI/efficientsci_base.py --distributed=True
+```bash
+git clone https://github.com/XavierYX/EfficientSCI.git
+cd EfficientSCI
 ```
 
-Launch single GPU training by the statement below.
+Install the required dependencies:
 
-Default using GPU 0. One can also choosing GPUs by specify CUDA_VISIBLE_DEVICES
-
-```
-python tools/train.py configs/EfficientSCI/efficientsci_base.py
+```bash
+pip install -r requirements.txt
 ```
 
-## Testing EfficientSCI on Grayscale Simulation Dataset 
-Specify the path of weight parameters, then launch 6 benchmark test in grayscale simulation dataset by executing the statement below.
+The original EfficientSCI implementation requires Python 3 and PyTorch 1.9 or later. A CUDA-enabled GPU is recommended for training and reconstruction.
 
-```
-python tools/test.py configs/EfficientSCI/efficientsci_base.py --weights=checkpoints/efficientsci_base.pth
+## Data and Checkpoints
+
+The checkpoints and datasets used for the TCWM reconstruction experiments are not included in this repository because of their file sizes.
+
+They can be downloaded from:
+
+**[BaiduNetdisk](https://pan.baidu.com/s/1EGIKDW7nIR2XSDMazY8Lfg?pwd=3kpg)**  
+Extraction code: `3kpg`
+
+After downloading, place the corresponding folders in the root directory of the repository:
+
+```text
+EfficientSCI/
+├── checkpoints/
+├── test_datasets/
+├── cacti/
+├── configs/
+├── docs/
+├── tools/
+├── requirements.txt
+└── README.md
 ```
 
-## Testing EfficientSCI in Color Simulation Dataset 
-First, download the model weight file (checkpoints/efficientsci/efficientsci_base_mid_color.pth) and test data (datasets/middle_scale) from [Dropbox](https://www.dropbox.com/sh/ig08kyi2kdnjxm1/AAAjskial4ZEQ_9Qp31SEYeda?dl=0) or [BaiduNetdisk](https://pan.baidu.com/s/1wRMBsYoyVFFsEI5-lTPy6w?pwd=d2oi), and place them in the checkpoints folder and test_datasets folder respectively. 
-Then, execute the statement below to launch EfficientSCI in 6 middle color simulation dataset. 
-```
-python tools/test.py configs/EfficientSCI/efficientsci_base_mid_color.py --weights=checkpoints/efficientsci_base_mid_color.pth
+The `checkpoints/` and `test_datasets/` directories are excluded from Git tracking because of their file sizes.
+
+## Usage
+
+The code follows the original EfficientSCI training and reconstruction framework.
+
+For reconstruction using a trained checkpoint, the general command is:
+
+```bash
+python tools/test.py configs/EfficientSCI/efficientsci_base.py \
+    --weights=checkpoints/efficientsci_base.pth
 ```
 
+Please modify the configuration, dataset path, and checkpoint path according to the corresponding TCWM experiment when necessary.
+
+For further details about the network architecture and the original training framework, please refer to the [EfficientSCI repository](https://github.com/ucaswangls/EfficientSCI).
+
+## Acknowledgement
+
+This repository is adapted from **EfficientSCI: Densely Connected Network with Space-time Factorization for Large-scale Video Snapshot Compressive Imaging** by Lishun Wang, Miao Cao, and Xin Yuan.
+
+We sincerely thank the authors of EfficientSCI for making their code publicly available. Their implementation provides the reconstruction framework used in our TCWM work.
 
 ## Citation
 
+If you find this work or code useful for your research, please consider citing our paper:
+
+```bibtex
+@article{you2026tcwm,
+  title   = {NIR-II Temporal Compressive Wide-Field Microscope (TCWM) Achieving Fluorescent Dynamic Imaging Beyond Camera Frame Rate},
+  author  = {You, Xuan and Liu, Xiaolong and Liu, Wei and Zhang, Peijin and Zhang, Yuhuang and Wang, Yalun and Wang, Jianguo and Qian, Jun},
+  journal = {Laser \& Photonics Reviews},
+  pages   = {e02999},
+  year    = {2026},
+  doi     = {10.1002/lpor.202502999}
+}
 ```
+
+Please also cite the original EfficientSCI work:
+
+```bibtex
 @inproceedings{wang2023efficientsci,
-  title={Efficientsci: Densely connected network with space-time factorization for large-scale video snapshot compressive imaging},
-  author={Wang, Lishun and Cao, Miao and Yuan, Xin},
-  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
-  pages={18477--18486},
-  year={2023}
+  title     = {EfficientSCI: Densely Connected Network with Space-Time Factorization for Large-Scale Video Snapshot Compressive Imaging},
+  author    = {Wang, Lishun and Cao, Miao and Yuan, Xin},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages     = {18477--18486},
+  year      = {2023}
 }
 ```
